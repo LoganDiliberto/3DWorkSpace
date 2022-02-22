@@ -17,7 +17,7 @@ public class AnimationAndMovementController : MonoBehaviour
     Vector3 currentRunMovement;
     bool isMovementPressed;
     bool isRunPressed;
-    float rotationFactorPerFrame = 15.0f;
+    float rotationFactorPerFrame = 1.0f;
 
     void Awake()
     {
@@ -43,6 +43,7 @@ public class AnimationAndMovementController : MonoBehaviour
     }
 
     void handleRotation(){
+
         Vector3 positionToLookAt;
 
         positionToLookAt.x = currentMovement.x;
@@ -74,7 +75,7 @@ public class AnimationAndMovementController : MonoBehaviour
         bool isWalking = animator.GetBool(isWalkingHash);
         bool isRunning = animator.GetBool(isRunningHash);
 
-        if (isMovementPressed && isWalking){
+        if (isMovementPressed && !isWalking){
             animator.SetBool(isWalkingHash, true);
         }
         else if(!isMovementPressed && isWalking){
@@ -107,15 +108,12 @@ public class AnimationAndMovementController : MonoBehaviour
         handleRotation();
         handleAnimation();
 
-        if(isRunPressed)
-        {
+        if(isRunPressed){
             characterController.Move(currentRunMovement * Time.deltaTime);
         }
-        else
-        {
+        else{
             characterController.Move(currentMovement * Time.deltaTime);
         }
-        
     }
 
     void OnEnable()
