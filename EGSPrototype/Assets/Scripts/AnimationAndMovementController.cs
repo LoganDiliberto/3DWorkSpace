@@ -13,6 +13,7 @@ public class AnimationAndMovementController : MonoBehaviour
     // variables to store optimized setter/getter parameter IDs
     int isWalkingHash;
     int isRunningHash;
+    int isSwingingSwordHash;
 
     // variables to store player input values
     Vector2 currentMovementInput;
@@ -20,9 +21,11 @@ public class AnimationAndMovementController : MonoBehaviour
     Vector3 currentRunMovement;
     bool isMovementPressed;
     bool isRunPressed;
+    bool isSwingingSwordPressed;
 
     // constants
     float rotationFactorPerFrame = 15.0f;
+    float walkMultiplier = 2.0f;
     float runMultiplier = 3.0f;
     int zero = 0;
     float gravity = -9.8f;
@@ -39,6 +42,7 @@ public class AnimationAndMovementController : MonoBehaviour
         // set the parameter hash references
         isWalkingHash = Animator.StringToHash("isWalking");
         isRunningHash = Animator.StringToHash("isRunning");
+        isSwingingSwordHash = Animator.StringToHash("swingSwordAttack");
 
         // set the player input callbacks
         playerInput.CharacterControls.Move.started += onMovementInput;
@@ -46,11 +50,18 @@ public class AnimationAndMovementController : MonoBehaviour
         playerInput.CharacterControls.Move.performed += onMovementInput;
         playerInput.CharacterControls.Run.started += onRun;
         playerInput.CharacterControls.Run.canceled += onRun;
+        playerInput.CharacterControls.SwordSwing.started += onSwordSwing;
+        playerInput.CharacterControls.SwordSwing.canceled += onSwordSwing;
     }
 
     void onRun (InputAction.CallbackContext context)
     {
         isRunPressed = context.ReadValueAsButton();
+    }
+
+    void onSwordSwing (InputAction.CallbackContext context)
+    {
+        isSwingingSwordPressed = context.ReadValueAsButton();
     }
 
     void handleRotation()
@@ -75,8 +86,8 @@ public class AnimationAndMovementController : MonoBehaviour
     void onMovementInput (InputAction.CallbackContext context)
     {
             currentMovementInput = context.ReadValue<Vector2>();
-            currentMovement.x = currentMovementInput.x;
-            currentMovement.z = currentMovementInput.y;
+            currentMovement.x = currentMovementInput.x * walkMultiplier;
+            currentMovement.z = currentMovementInput.y * walkMultiplier;
             currentRunMovement.x = currentMovementInput.x * runMultiplier;
             currentRunMovement.z = currentMovementInput.y * runMultiplier;
             isMovementPressed = currentMovementInput.x != zero || currentMovementInput.y != zero;
@@ -87,6 +98,14 @@ public class AnimationAndMovementController : MonoBehaviour
         // get parameter values from animator
         bool isWalking = animator.GetBool(isWalkingHash);
         bool isRunning = animator.GetBool(isRunningHash);
+        bool swingSwordAttack = animator.GetBool(isSwingingSwordHash);
+
+        if(swingSwordAttack){
+            animator.SetBool(isSwingingSwordHash, true);
+        }
+        else{
+            animator.SetBool(isSwingingSwordHash, false);
+        }
 
         // start walking if movement pressed is true and not already walking
         if (isMovementPressed && !isWalking) {
