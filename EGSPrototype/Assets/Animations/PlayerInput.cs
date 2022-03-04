@@ -46,9 +46,27 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SwordSwing"",
+                    ""name"": ""MeleeAttack"",
                     ""type"": ""Button"",
                     ""id"": ""e7b7d7c5-958d-40c9-a747-7df87df44feb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RangedAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""dbf85fb6-3d12-4b6e-8917-48513c72b603"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Roll"",
+                    ""type"": ""Button"",
+                    ""id"": ""d103c24e-d2c4-4605-8554-87d4838e30d4"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -151,7 +169,29 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwordSwing"",
+                    ""action"": ""MeleeAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""719e7247-0754-4e7d-a4ad-12d2d68aa864"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RangedAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ce7f326-b850-42bd-a1ff-f99e67f107a5"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -164,7 +204,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_CharacterControls = asset.FindActionMap("CharacterControls", throwIfNotFound: true);
         m_CharacterControls_Move = m_CharacterControls.FindAction("Move", throwIfNotFound: true);
         m_CharacterControls_Run = m_CharacterControls.FindAction("Run", throwIfNotFound: true);
-        m_CharacterControls_SwordSwing = m_CharacterControls.FindAction("SwordSwing", throwIfNotFound: true);
+        m_CharacterControls_MeleeAttack = m_CharacterControls.FindAction("MeleeAttack", throwIfNotFound: true);
+        m_CharacterControls_RangedAttack = m_CharacterControls.FindAction("RangedAttack", throwIfNotFound: true);
+        m_CharacterControls_Roll = m_CharacterControls.FindAction("Roll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -226,14 +268,18 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private ICharacterControlsActions m_CharacterControlsActionsCallbackInterface;
     private readonly InputAction m_CharacterControls_Move;
     private readonly InputAction m_CharacterControls_Run;
-    private readonly InputAction m_CharacterControls_SwordSwing;
+    private readonly InputAction m_CharacterControls_MeleeAttack;
+    private readonly InputAction m_CharacterControls_RangedAttack;
+    private readonly InputAction m_CharacterControls_Roll;
     public struct CharacterControlsActions
     {
         private @PlayerInput m_Wrapper;
         public CharacterControlsActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_CharacterControls_Move;
         public InputAction @Run => m_Wrapper.m_CharacterControls_Run;
-        public InputAction @SwordSwing => m_Wrapper.m_CharacterControls_SwordSwing;
+        public InputAction @MeleeAttack => m_Wrapper.m_CharacterControls_MeleeAttack;
+        public InputAction @RangedAttack => m_Wrapper.m_CharacterControls_RangedAttack;
+        public InputAction @Roll => m_Wrapper.m_CharacterControls_Roll;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -249,9 +295,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Run.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
-                @SwordSwing.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSwordSwing;
-                @SwordSwing.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSwordSwing;
-                @SwordSwing.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSwordSwing;
+                @MeleeAttack.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMeleeAttack;
+                @MeleeAttack.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMeleeAttack;
+                @MeleeAttack.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMeleeAttack;
+                @RangedAttack.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRangedAttack;
+                @RangedAttack.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRangedAttack;
+                @RangedAttack.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRangedAttack;
+                @Roll.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRoll;
+                @Roll.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRoll;
+                @Roll.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRoll;
             }
             m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -262,9 +314,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
-                @SwordSwing.started += instance.OnSwordSwing;
-                @SwordSwing.performed += instance.OnSwordSwing;
-                @SwordSwing.canceled += instance.OnSwordSwing;
+                @MeleeAttack.started += instance.OnMeleeAttack;
+                @MeleeAttack.performed += instance.OnMeleeAttack;
+                @MeleeAttack.canceled += instance.OnMeleeAttack;
+                @RangedAttack.started += instance.OnRangedAttack;
+                @RangedAttack.performed += instance.OnRangedAttack;
+                @RangedAttack.canceled += instance.OnRangedAttack;
+                @Roll.started += instance.OnRoll;
+                @Roll.performed += instance.OnRoll;
+                @Roll.canceled += instance.OnRoll;
             }
         }
     }
@@ -273,6 +331,8 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
-        void OnSwordSwing(InputAction.CallbackContext context);
+        void OnMeleeAttack(InputAction.CallbackContext context);
+        void OnRangedAttack(InputAction.CallbackContext context);
+        void OnRoll(InputAction.CallbackContext context);
     }
 }

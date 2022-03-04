@@ -24,9 +24,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SwordSwing",
+                    "name": "MeleeAttack",
                     "type": "Button",
                     "id": "e7b7d7c5-958d-40c9-a747-7df87df44feb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RangedAttack",
+                    "type": "Button",
+                    "id": "dbf85fb6-3d12-4b6e-8917-48513c72b603",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Roll",
+                    "type": "Button",
+                    "id": "d103c24e-d2c4-4605-8554-87d4838e30d4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -129,7 +147,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwordSwing",
+                    "action": "MeleeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "719e7247-0754-4e7d-a4ad-12d2d68aa864",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RangedAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1ce7f326-b850-42bd-a1ff-f99e67f107a5",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
