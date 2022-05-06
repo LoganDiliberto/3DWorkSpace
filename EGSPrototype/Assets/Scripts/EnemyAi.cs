@@ -7,7 +7,7 @@ public class EnemyAi : MonoBehaviour
     public NavMeshAgent agent;
 
     public Transform player;
-
+    public Player playerObj;
     public LayerMask whatIsGround, whatIsPlayer;
 
     public float health;
@@ -29,6 +29,7 @@ public class EnemyAi : MonoBehaviour
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
+        playerObj = GameObject.Find("Player").GetComponent<Player>();
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -88,6 +89,7 @@ public class EnemyAi : MonoBehaviour
             //rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
             //rb.AddForce(transform.up * 8f, ForceMode.Impulse);
             Debug.Log("Attacking Player");
+            playerObj.takeDamage(1);
             ///End of attack code
 
             alreadyAttacked = true;

@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     public Transform meleeAttackPoint;
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
+    public HealthBar healthbar;
+    public int maxHealth = 5;
+    public int currentHealth;
 
 
     // variables to store optimized setter/getter parameter IDs
@@ -41,6 +44,17 @@ public class Player : MonoBehaviour
     float groundedGravity = -.05f;
     int meleeDamage = 10;
     int rangedDamage = 5;
+
+    void Start(){
+        currentHealth = maxHealth;
+        healthbar.SetMaxHealth(maxHealth);
+    }
+
+    public void takeDamage(int damage){
+        Debug.Log("Took Damage");
+        currentHealth -= damage;
+        healthbar.SetHealth(currentHealth);
+    }
 
     // Awake is called earlier than Start in Unity's event life cycle
     void Awake() 
