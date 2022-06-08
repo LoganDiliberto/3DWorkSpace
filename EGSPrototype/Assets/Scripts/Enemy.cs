@@ -7,12 +7,14 @@ public class Enemy : MonoBehaviour
 
     public int maxHealth = 100;
     int currentHealth;
+    ScoreController scoreController;
 
     // Start is called before the first frame update
     void Start()
     {
         //Start with max health
         currentHealth = maxHealth;
+        scoreController = GameObject.FindGameObjectWithTag("ScoreController").GetComponent<ScoreController>();
     }
 
     // Update is called once per frame
@@ -38,6 +40,7 @@ public class Enemy : MonoBehaviour
         //Add death animation
         Debug.Log("Enemy Died");
         Destroy(gameObject);
+        scoreController.AddScore(10);
         
     }
 }
