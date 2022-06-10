@@ -21,6 +21,8 @@ public class EnemyAi : MonoBehaviour
     public float timeBetweenAttacks;
     bool alreadyAttacked;
     public GameObject projectile;
+    public float projectileSpeed;
+    public float projectileAntiGrav;
 
     //States
     public float sightRange, attackRange;
@@ -84,12 +86,13 @@ public class EnemyAi : MonoBehaviour
 
         if (!alreadyAttacked)
         {
+            
             ///Attack code here
-            //Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            //rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            //rb.AddForce(transform.up * 8f, ForceMode.Impulse);
+            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+            rb.AddForce(transform.forward * projectileSpeed, ForceMode.Impulse);
+            rb.AddForce(transform.up * projectileAntiGrav, ForceMode.Impulse);
             Debug.Log("Attacking Player");
-            playerObj.takeDamage(1);
+            //playerObj.takeDamage(1);
             ///End of attack code
 
             alreadyAttacked = true;
@@ -98,6 +101,7 @@ public class EnemyAi : MonoBehaviour
     }
     private void ResetAttack()
     {
+        
         alreadyAttacked = false;
     }
 
