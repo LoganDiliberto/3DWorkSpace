@@ -70,22 +70,22 @@ public class TimeController : MonoBehaviour
 
     private void UpdateTimeOfDay()
     {
-        currentTime = currentTime.AddSeconds(Time.deltaTime * timeMultiplier);
+        currentTime = currentTime.AddSeconds(Time.deltaTime * timeMultiplier); 
 
-        if (timeText != null)
+        if(timeText != null)
         {
             timeText.text = currentTime.ToString("HH:mm");
         }
     }
-
+    
     private void RotateSun()
     {
         float sunLightRotation;
 
-        if (currentTime.TimeOfDay > sunriseTime && currentTime.TimeOfDay < sunsetTime)
+        if(currentTime.TimeOfDay > sunriseTime && currentTime.TimeOfDay < sunsetTime)
         {
             TimeSpan sunriseToSunsetDuration = CalculateTimeDifference(sunriseTime, sunsetTime);
-            TimeSpan timeSinceSunrise = CalculateTimeDifference(sunsetTime, currentTime.TimeOfDay);
+            TimeSpan timeSinceSunrise = CalculateTimeDifference(sunriseTime, currentTime.TimeOfDay);
 
             double percentage = timeSinceSunrise.TotalMinutes / sunriseToSunsetDuration.TotalMinutes;
 
@@ -101,7 +101,7 @@ public class TimeController : MonoBehaviour
             sunLightRotation = Mathf.Lerp(180, 360, (float)percentage);
         }
 
-        sunLight.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
+        sunLight.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right); 
     }
 
     private void UpdateLightSettings()
@@ -116,11 +116,11 @@ public class TimeController : MonoBehaviour
     {
         TimeSpan difference = toTime - fromTime;
 
-        if (difference.TotalSeconds < 0)
+        if(difference.TotalSeconds < 0)
         {
             difference += TimeSpan.FromHours(24);
         }
 
-        return difference;
+        return difference; 
     }
 }
