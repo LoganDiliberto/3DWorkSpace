@@ -19,8 +19,11 @@ public class buffPickup : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            Destroy(this.gameObject);
-            playerObj.GetComponent<Player>().isBuffed = true;
+            if(playerObj.GetComponent<Player>().isBuffed == false)
+            {
+                playerObj.GetComponent<Player>().isBuffed = true;
+                Destroy(this.gameObject);
+            }
         }
         else
         {

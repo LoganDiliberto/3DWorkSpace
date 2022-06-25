@@ -15,8 +15,7 @@ public class Player : MonoBehaviour
     public HealthBar healthbar;
     public int maxHealth = 5;
     public int currentHealth;
-    public bool isBuffed = false;
-    private int whichBuff = 0;
+    
 
     // variables to store optimized setter/getter parameter IDs
     int isWalkingHash;
@@ -55,7 +54,10 @@ public class Player : MonoBehaviour
     int rangedDamageDONOTCHANGE = 5;
 
     //buff variables
-    float totalBuffTime = 30f;
+    public bool isBuffed = false;
+    private int whichBuff = 0;
+
+    float totalBuffTime = 10f;
     int buffMultiplier = 2;
     bool immortal = false;
     bool alreadyBuffed = false;
@@ -256,8 +258,12 @@ public class Player : MonoBehaviour
             if (whichBuff == 1)
             {
                 Debug.Log("speed buff");
-                walkMultiplier += (buffMultiplier * 0.2f);
-                runMultiplier += (buffMultiplier * 0.2f);
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
+                walkMultiplier *= buffMultiplier;
+                runMultiplier *= buffMultiplier;
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
             }
             else if (whichBuff == 2)
             {
@@ -289,8 +295,12 @@ public class Player : MonoBehaviour
         {
             if (whichBuff == 1)
             {
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
                 walkMultiplier = walkMultiplierDONOTCHANGE;
                 runMultiplier = runMultiplierDONOTCHANGE;
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
             }
             else if (whichBuff == 2)
             {
@@ -302,10 +312,11 @@ public class Player : MonoBehaviour
                 immortal = false;
             }
 
+            isBuffed = false;
             whichBuff = 0;
             alreadyBuffed = false;
             Debug.Log(alreadyBuffed + "buff off");
-            totalBuffTime = 30f;
+            totalBuffTime = 10f;
         }
 
 
