@@ -8,11 +8,16 @@ public class buffPickup : MonoBehaviour
     public Player playerObj;
     public LayerMask whatIsGround, whatIsPlayer;
 
+    public GameObject gameMaster;
+    public Component waveSpawner;
+
     // Start is called before the first frame update
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
         playerObj = GameObject.Find("Player").GetComponent<Player>();
+        gameMaster = GameObject.Find("GameMaster");
+        //waveSpawner = GameObject.Find("GameMaster").GetComponent<WaveSpawner>;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,6 +28,7 @@ public class buffPickup : MonoBehaviour
             {
                 playerObj.GetComponent<Player>().isBuffed = true;
                 Destroy(this.gameObject);
+                gameMaster.GetComponent<WaveSpawner>().buffCount -= 1;
             }
         }
         else

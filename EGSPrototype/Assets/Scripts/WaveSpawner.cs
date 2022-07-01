@@ -15,7 +15,6 @@ public class WaveSpawner : MonoBehaviour
         public int count;//Number of enemies
         public float rate;//Spawn Rate
 
-
     }
 
     public Wave[] waves;
@@ -28,6 +27,16 @@ public class WaveSpawner : MonoBehaviour
 
     private float searchCountdown = 1f;//Amount of time between searching if all enemies are dead(taxing method)
     private SpawnState state = SpawnState.COUNTING;
+
+    public GameObject buff;
+    public int buffCount = 0;
+
+    private int buffPlaceX;
+    private int buffPlaceZ;
+    public GameObject buffLocator;
+    private float buffPlacementTimer = 0f;
+    
+
 
     void Start() {
         waveCountdown = timeBetweenWaves;
@@ -58,6 +67,23 @@ public class WaveSpawner : MonoBehaviour
         else{
             waveCountdown -= Time.deltaTime;
         }
+
+        if (buffCount <= 4)
+        {
+            buffPlaceX = Random.Range(-23, 23);
+            buffPlaceZ = Random.Range(-23, 12);
+
+            buffLocator.transform.position = new Vector3(buffPlaceX, 1, buffPlaceZ);
+
+            PlaceBuffs();
+        }
+        //else if (buffPlacementTimer > 0f)
+        //{
+            //PlaceBuffTimer();
+        //}
+
+
+
     }
 
     void WaveCompleted(){
@@ -115,4 +141,23 @@ public class WaveSpawner : MonoBehaviour
         Transform _sp = spawnPoints[ Random.Range(0, spawnPoints.Length)];
         Instantiate (_enemy, _sp.position, _sp.rotation);
     }
+
+    void PlaceBuffs()
+    {
+        if(buffCount < 4 && buffPlacementTimer <= 0f)
+        {
+            Transform bP = buffLocator.transform;
+
+            Instantiate(buff, bP);
+
+            buffCount += 1;
+            buffPlacementTimer = 20f;
+        }
+
+        if (buffPlacementTimer > 0f)
+        {
+            buffPlacementTimer -= Time.deltaTime;
+        }
+    }
+
 }
