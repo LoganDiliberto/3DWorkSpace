@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public HealthBar healthbar;
     public int maxHealth = 5;
     public int currentHealth;
+    public GameObject boomer;
 
 
     // variables to store optimized setter/getter parameter IDs
@@ -220,6 +221,11 @@ public class Player : MonoBehaviour
             characterController.Move(currentRunMovement * Time.deltaTime);
         } else {
             characterController.Move(currentMovement * Time.deltaTime);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space)){
+            GameObject clone;
+            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
         }
     }
     
