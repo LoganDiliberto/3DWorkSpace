@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     {
         //Start with max health
         currentHealth = maxHealth;
-        scoreController = GameObject.FindGameObjectWithTag("ScoreController").GetComponent<ScoreController>();
+        //scoreController = GameObject.FindGameObjectWithTag("ScoreController").GetComponent<ScoreController>();
     }
 
     // Update is called once per frame

@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public int maxHealth = 12;
     public int currentHealth;
     public int healthRegenerateThreshhold = 4;
+    public float timeToRegenHealth;
 
 
     // variables to store optimized setter/getter parameter IDs
@@ -67,8 +68,9 @@ public class Player : MonoBehaviour
 
     IEnumerator regenerateHealth(){
         while (currentHealth < healthRegenerateThreshhold){
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(timeToRegenHealth);
             currentHealth += 1;
+            healthbar.SetHealth(currentHealth);
         }
         healthRegenerating = false;
     }
