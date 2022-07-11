@@ -13,9 +13,11 @@ public class Player : MonoBehaviour
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
     public HealthBar healthbar;
-    public int maxHealth = 5;
+    public int maxHealth = 12;
     public int currentHealth;
     public GameObject boomer;
+    public int healthRegenerateThreshhold = 4;
+    public float timeToRegenHealth;
 
 
     // variables to store optimized setter/getter parameter IDs
@@ -62,6 +64,8 @@ public class Player : MonoBehaviour
     bool immortal = false;
     bool alreadyBuffed = false;
 
+    //status flag
+    bool healthRegenerating = false;
 
     void Start(){
         currentHealth = maxHealth;
@@ -72,6 +76,20 @@ public class Player : MonoBehaviour
         Debug.Log("Took Damage");
         currentHealth -= damage;
         healthbar.SetHealth(currentHealth);
+        
+        if((currentHealth < healthRegenerateThreshhold) && !healthRegenerating){
+            healthRegenerating = true;
+            StartCoroutine(regenerateHealth());
+        }
+    }
+
+    IEnumerator regenerateHealth(){
+        while (currentHealth < healthRegenerateThreshhold){
+            yield return new WaitForSeconds(timeToRegenHealth);
+            currentHealth += 1;
+            healthbar.SetHealth(currentHealth);
+        }
+        healthRegenerating = false;
     }
 
     // Awake is called earlier than Start in Unity's event life cycle
