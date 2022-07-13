@@ -8,9 +8,11 @@ using TMPro;
 //To Do: Create a Day Counter to determine how many days have passed since start
 
 public class TimeController : MonoBehaviour
-{
-    [SerializeField]
+{   
     private float timeMultiplier;
+
+    [SerializeField]
+    private float nightLengthMinutes;
 
     [SerializeField]
     private float startHour;
@@ -45,6 +47,8 @@ public class TimeController : MonoBehaviour
     [SerializeField]
     private float maxMoonLightIntensity;
 
+    public bool timePaused;
+
     private DateTime currentTime;
 
     private TimeSpan sunriseTime;
@@ -54,18 +58,22 @@ public class TimeController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timeMultiplier = (1/nightLengthMinutes) * 720;
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
 
         sunriseTime = TimeSpan.FromHours(sunriseHour);
         sunsetTime = TimeSpan.FromHours(sunsetHour);
+        StartCoroutine(trackRoundTime(nightLengthMinutes));
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateTimeOfDay();
-        RotateSun();
-        UpdateLightSettings();
+        if (!timePaused){
+            UpdateTimeOfDay();
+            RotateSun();
+            UpdateLightSettings();
+        }
     }
 
     private void UpdateTimeOfDay()
@@ -122,5 +130,12 @@ public class TimeController : MonoBehaviour
         }
 
         return difference; 
+    }
+
+    IEnumerator trackRoundTime(float minutes){
+        yield return new WaitForSeconds(minutes * 60f);
+        //Game win function here
+        yield return new WaitForSeconds(3f);
+        timePaused = true;
     }
 }
