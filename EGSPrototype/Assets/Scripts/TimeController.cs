@@ -11,6 +11,8 @@ public class TimeController : MonoBehaviour
 {   
     private float timeMultiplier;
 
+    public GameObject winMenu;
+
     [SerializeField]
     private float nightLengthMinutes;
 
@@ -47,8 +49,6 @@ public class TimeController : MonoBehaviour
     [SerializeField]
     private float maxMoonLightIntensity;
 
-    public bool timePaused;
-
     private DateTime currentTime;
 
     private TimeSpan sunriseTime;
@@ -69,11 +69,9 @@ public class TimeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!timePaused){
             UpdateTimeOfDay();
             RotateSun();
             UpdateLightSettings();
-        }
     }
 
     private void UpdateTimeOfDay()
@@ -136,6 +134,7 @@ public class TimeController : MonoBehaviour
         yield return new WaitForSeconds(minutes * 60f);
         //Game win function here
         yield return new WaitForSeconds(3f);
-        timePaused = true;
+	Time.timeScale = 0;
+	winMenu.SetActive(true);
     }
 }
