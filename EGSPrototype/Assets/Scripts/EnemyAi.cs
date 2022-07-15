@@ -73,7 +73,7 @@ public class EnemyAi : MonoBehaviour
 
     private void ChasePlayer()
     {
-        Debug.Log("Chasing Player");
+        // Debug.Log("Chasing Player");
         agent.SetDestination(player.position);
     }
 
@@ -91,7 +91,7 @@ public class EnemyAi : MonoBehaviour
             Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
             rb.AddForce(transform.forward * projectileSpeed, ForceMode.Impulse);
             rb.AddForce(transform.up * projectileAntiGrav, ForceMode.Impulse);
-            Debug.Log("Attacking Player");
+            // Debug.Log("Attacking Player");
             //playerObj.takeDamage(1);
             ///End of attack code
 
