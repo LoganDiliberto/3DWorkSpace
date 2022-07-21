@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
     public HealthBar healthbar;
-    public int maxHealth = 5;
+    public int maxHealth = 12;
     public int currentHealth;
     public GameObject boomer;
     public float invincibilityLength;//Seconds for invincible length after being hit
@@ -22,6 +22,9 @@ public class Player : MonoBehaviour
     private float invincibilityRollCounter;
     public float rollCooldownLength;//Seconds before you can roll again
     private float rollCounter;
+    public int healthRegenerateThreshhold = 4;
+    public float timeToRegenHealth;
+
 
     // variables to store optimized setter/getter parameter IDs
     int isWalkingHash;
@@ -50,6 +53,25 @@ public class Player : MonoBehaviour
     int meleeDamage = 10;
     int rangedDamage = 5;
 
+    //true constants (dont change with code - for resetting other variables to their original value)
+    int maxHealthDONOTCHANGE = 5;
+    float walkMultiplierDONOTCHANGE = 2.0f;
+    float runMultiplierDONOTCHANGE = 3.0f;
+    int meleeDamageDONOTCHANGE = 10;
+    int rangedDamageDONOTCHANGE = 5;
+
+    //buff variables
+    public bool isBuffed = false;
+    private int whichBuff = 0;
+
+    float totalBuffTime = 10f;
+    int buffMultiplier = 2;
+    bool immortal = false;
+    bool alreadyBuffed = false;
+
+    //status flag
+    bool healthRegenerating = false;
+
     void Start(){
         currentHealth = maxHealth;
         healthbar.SetMaxHealth(maxHealth);
@@ -63,6 +85,20 @@ public class Player : MonoBehaviour
             invincibilityCounter = invincibilityLength;
         }
         Debug.Log("Didn't Take Damage From Invincibliity!");
+        
+        if((currentHealth < healthRegenerateThreshhold) && !healthRegenerating){
+            healthRegenerating = true;
+            StartCoroutine(regenerateHealth());
+        }
+    }
+
+    IEnumerator regenerateHealth(){
+        while (currentHealth < healthRegenerateThreshhold){
+            yield return new WaitForSeconds(timeToRegenHealth);
+            currentHealth += 1;
+            healthbar.SetHealth(currentHealth);
+        }
+        healthRegenerating = false;
     }
 
     // Awake is called earlier than Start in Unity's event life cycle
@@ -248,8 +284,93 @@ public class Player : MonoBehaviour
         } else {
             characterController.Move(currentMovement * Time.deltaTime);
         }
+
+        if(Input.GetKeyDown(KeyCode.Space)){
+            GameObject clone;
+            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+        }
+
+        if (isBuffed == true)
+        {
+            handleBuffs();
+        }
+
     }
-    
+
+    void handleBuffs()
+    {
+        if (!alreadyBuffed)
+        {
+            //set random buff to be active
+            whichBuff = Random.Range(1, 4);
+
+            if (whichBuff == 1)
+            {
+                Debug.Log("speed buff");
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
+                walkMultiplier *= buffMultiplier;
+                runMultiplier *= buffMultiplier;
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
+            }
+            else if (whichBuff == 2)
+            {
+                Debug.Log("damage buff");
+                meleeDamage *= buffMultiplier;
+                rangedDamage *= buffMultiplier;
+            }
+            else if (whichBuff == 3)
+            {
+                Debug.Log("immortal buff");
+                immortal = true;
+            }
+            else if (whichBuff == 4)
+            {
+                Debug.Log("health up buff");
+                currentHealth = 5;
+                healthbar.SetHealth(currentHealth);
+            }
+
+            alreadyBuffed = true;
+        }
+        else if (alreadyBuffed && totalBuffTime > 0)
+        {
+            //Debug.Log(totalBuffTime);
+            totalBuffTime -= Time.deltaTime;
+        }
+
+        if (totalBuffTime <= 0)
+        {
+            if (whichBuff == 1)
+            {
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
+                walkMultiplier = walkMultiplierDONOTCHANGE;
+                runMultiplier = runMultiplierDONOTCHANGE;
+                //Debug.Log(walkMultiplier);
+                //Debug.Log(runMultiplier);
+            }
+            else if (whichBuff == 2)
+            {
+                meleeDamage = meleeDamageDONOTCHANGE;
+                rangedDamage = rangedDamageDONOTCHANGE;
+            }
+            else if (whichBuff == 3)
+            {
+                immortal = false;
+            }
+
+            isBuffed = false;
+            whichBuff = 0;
+            alreadyBuffed = false;
+            Debug.Log(alreadyBuffed + "buff off");
+            totalBuffTime = 10f;
+        }
+
+
+    }
+
     void OnEnable()
     {
         // enable the character controls action map
