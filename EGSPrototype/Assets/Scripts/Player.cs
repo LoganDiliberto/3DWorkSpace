@@ -16,6 +16,12 @@ public class Player : MonoBehaviour
     public int maxHealth = 12;
     public int currentHealth;
     public GameObject boomer;
+    public float invincibilityLength;//Seconds for invincible length after being hit
+    private float invincibilityCounter;
+    public float invincibilityRollLength;//Seconds for invincible length after rolling
+    private float invincibilityRollCounter;
+    public float rollCooldownLength;//Seconds before you can roll again
+    private float rollCounter;
     public int healthRegenerateThreshhold = 4;
     public float timeToRegenHealth;
 
@@ -36,12 +42,11 @@ public class Player : MonoBehaviour
     bool isMeleeAttackingPressed;
     bool isRangedAttackingPressed;
     bool isRollPressed;
-    bool invinsibility = false;
 
     // constants
     float rotationFactorPerFrame = 15.0f;
-    float walkMultiplier = 2.0f;
-    float runMultiplier = 3.0f;
+    public float walkMultiplier = 2.0f;
+    public float runMultiplier = 3.0f;
     int zero = 0;
     float gravity = -9.8f;
     float groundedGravity = -.05f;
@@ -73,9 +78,13 @@ public class Player : MonoBehaviour
     }
 
     public void takeDamage(int damage){
-        Debug.Log("Took Damage");
-        currentHealth -= damage;
-        healthbar.SetHealth(currentHealth);
+        if(invincibilityCounter <= 0 && invincibilityRollCounter <=0){
+            Debug.Log("Took Damage");
+            currentHealth -= damage;
+            healthbar.SetHealth(currentHealth);
+            invincibilityCounter = invincibilityLength;
+        }
+        Debug.Log("Didn't Take Damage From Invincibliity!");
         
         if((currentHealth < healthRegenerateThreshhold) && !healthRegenerating){
             healthRegenerating = true;
@@ -137,18 +146,27 @@ public class Player : MonoBehaviour
                 enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
             }
         }
+        if(isRangedAttackingPressed){
+            GameObject clone;
+            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+        }
     }
 
     void handleRoll(){
         //Needs a cooldown timer to be added so you cant roll again before animation ends
         bool isRolling = animator.GetBool(isRollHash);
         if(isRollPressed && !isRolling){
-            animator.SetBool(isRollHash, true);
-            invinsibility = true;
+            if(rollCounter <= 0){
+                animator.SetBool(isRollHash, true);
+                rollCounter = rollCooldownLength;
+                invincibilityRollCounter = invincibilityRollLength;
+            }
+            else{
+                Debug.Log("Can't roll again till timer is done!");
+            }
         }
         else if(!isRollPressed && isRolling){
             animator.SetBool(isRollHash, false);
-            invinsibility = false;
         }
     }
 
@@ -246,6 +264,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(invincibilityCounter > 0){
+            invincibilityCounter -= Time.deltaTime;
+        }
+        if(invincibilityRollCounter > 0){
+            invincibilityRollCounter -= Time.deltaTime;
+        }
+        if(rollCounter > 0){
+            rollCounter -= Time.deltaTime;
+        }
         handleGravity();
         handleRotation();
         handleRoll();
