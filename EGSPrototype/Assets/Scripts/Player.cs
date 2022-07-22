@@ -16,6 +16,10 @@ public class Player : MonoBehaviour
     public int maxHealth = 12;
     public int currentHealth;
     public GameObject boomer;
+    public float meleeAttackLength;//Seconds for time between attacks
+    private float meleeAttackCounter;
+    public float rangedAttackLength;//Seconds for time between ranged attacks
+    private float rangedAttackCounter;
     public float invincibilityLength;//Seconds for invincible length after being hit
     private float invincibilityCounter;
     public float invincibilityRollLength;//Seconds for invincible length after rolling
@@ -133,22 +137,31 @@ public class Player : MonoBehaviour
     void handleAttack(){
 
         if(isMeleeAttackingPressed){
-            //Play an animation
-            //animator.SetTrigger("attack");
-            //Debug.Log("I'm Swinging");
-            //Detect the enemies in our hit range
-            Collider [] hitEnemies = Physics.OverlapSphere(meleeAttackPoint.position, attackRange, enemyLayers);
+            if(meleeAttackCounter <= 0){
+                animator.SetBool(isRollHash, true);
+                meleeAttackCounter = meleeAttackLength;
             
-            //Damage them / Print there names
-            foreach (Collider enemy in hitEnemies)
-            {
-                Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
-                enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
+                //Play an animation
+                //animator.SetTrigger("attack");
+                //Debug.Log("I'm Swinging");
+                //Detect the enemies in our hit range
+                Collider [] hitEnemies = Physics.OverlapSphere(meleeAttackPoint.position, attackRange, enemyLayers);
+                
+                //Damage them / Print there names
+                foreach (Collider enemy in hitEnemies)
+                {
+                    Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
+                    enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
+                }
             }
         }
         if(isRangedAttackingPressed){
-            GameObject clone;
-            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+            if(rangedAttackCounter <= 0){
+                animator.SetBool(isRollHash, true);
+                rangedAttackCounter = rangedAttackLength;
+                GameObject clone;
+                clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+            }
         }
     }
 
@@ -273,6 +286,12 @@ public class Player : MonoBehaviour
         if(rollCounter > 0){
             rollCounter -= Time.deltaTime;
         }
+        if(meleeAttackCounter > 0){
+            meleeAttackCounter -= Time.deltaTime;
+        }
+        if(rangedAttackCounter > 0){
+            rangedAttackCounter -= Time.deltaTime;
+        }
         handleGravity();
         handleRotation();
         handleRoll();
@@ -283,11 +302,6 @@ public class Player : MonoBehaviour
             characterController.Move(currentRunMovement * Time.deltaTime);
         } else {
             characterController.Move(currentMovement * Time.deltaTime);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Space)){
-            GameObject clone;
-            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
         }
 
         if (isBuffed == true)
