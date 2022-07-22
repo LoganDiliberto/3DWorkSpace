@@ -73,7 +73,7 @@ public class WaveSpawner : MonoBehaviour
             buffPlaceX = Random.Range(-23, 23);
             buffPlaceZ = Random.Range(-23, 12);
 
-            buffLocator.transform.position = new Vector3(buffPlaceX, 1, buffPlaceZ);
+            // buffLocator.transform.position = new Vector3(buffPlaceX, 1, buffPlaceZ);
 
             PlaceBuffs();
         }

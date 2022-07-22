@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     public GameObject boomer;
     public int healthRegenerateThreshhold = 4;
     public float timeToRegenHealth;
+    GameObject hat;//Reference To The Main Character's Weapon
+
 
     public float invincibilityLength;//Seconds for invincible length after being hit
     private float invincibilityCounter;
@@ -25,7 +27,10 @@ public class Player : MonoBehaviour
     private float invincibilityRollCounter;
     public float rollCooldownLength;//Seconds before you can roll again
     private float rollCounter;
-
+    public float meleeAttackLength;//Seconds for time between attacks
+    private float meleeAttackCounter;
+    public float rangedAttackLength;//Seconds for time between ranged attacks
+    private float rangedAttackCounter;
     // variables to store optimized setter/getter parameter IDs
     int isWalkingHash;
     int isRunningHash;
@@ -51,7 +56,7 @@ public class Player : MonoBehaviour
     float gravity = -9.8f;
     float groundedGravity = -.05f;
     int meleeDamage = 10;
-    int rangedDamage = 5;
+    int rangedDamage = 15;
 
     //true constants (dont change with code - for resetting other variables to their original value)
     int maxHealthDONOTCHANGE = 5;
@@ -79,12 +84,12 @@ public class Player : MonoBehaviour
 
     public void takeDamage(int damage){
         if(invincibilityCounter <= 0 && invincibilityRollCounter <=0){
-            Debug.Log("Took Damage");
+            // Debug.Log("Took Damage");
             currentHealth -= damage;
             healthbar.SetHealth(currentHealth);
             invincibilityCounter = invincibilityLength;
         }
-        Debug.Log("Didn't Take Damage From Invincibliity!");
+        // Debug.Log("Didn't Take Damage From Invincibliity!");
         
         if((currentHealth < healthRegenerateThreshhold) && !healthRegenerating){
             healthRegenerating = true;
@@ -134,22 +139,40 @@ public class Player : MonoBehaviour
     void handleAttack(){
 
         if(isMeleeAttackingPressed){
-            //Play an animation
-            //animator.SetTrigger("attack");
-            //Debug.Log("I'm Swinging");
-            //Detect the enemies in our hit range
-            Collider [] hitEnemies = Physics.OverlapSphere(meleeAttackPoint.position, attackRange, enemyLayers);
-            
+            if(meleeAttackCounter <= 0){
+                meleeAttackCounter = meleeAttackLength;
+                //Play an animation
+                //animator.SetTrigger("attack");
+                //Debug.Log("I'm Swinging");
+                //Detect the enemies in our hit range
+                Collider [] hitEnemies = Physics.OverlapSphere(meleeAttackPoint.position, attackRange, enemyLayers);
+                
+                //Damage them / Print there names
+                foreach (Collider enemy in hitEnemies)
+                {
+                    // Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
+                    enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
+                }
+            }
+        }
+        hat = GameObject.Find("Boomer");//The Weapon The Character Is Holding In The Scene
+        if(hat != null){
+            Collider [] hitEnemies = Physics.OverlapSphere(hat.transform.position, 3, enemyLayers);
+            Debug.Log("The hat is flying!");
             //Damage them / Print there names
             foreach (Collider enemy in hitEnemies)
             {
-                Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
-                enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
+                Debug.Log("We Hit " + enemy.name + " For " + rangedDamage + " Damage!");
+                enemy.GetComponent<Enemy>().TakeDamage(rangedDamage);
             }
         }
+        
         if(isRangedAttackingPressed){
-            GameObject clone;
-            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+            if(rangedAttackCounter <= 0){
+                rangedAttackCounter = rangedAttackLength;
+                GameObject clone;
+                clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
+            }
         }
     }
 
@@ -163,7 +186,7 @@ public class Player : MonoBehaviour
                 invincibilityRollCounter = invincibilityRollLength;
             }
             else{
-                Debug.Log("Can't roll again till timer is done!");
+                // Debug.Log("Can't roll again till timer is done!");
             }
         }
         else if(!isRollPressed && isRolling){
@@ -274,6 +297,12 @@ public class Player : MonoBehaviour
         if(rollCounter > 0){
             rollCounter -= Time.deltaTime;
         }
+        if(meleeAttackCounter > 0){
+            meleeAttackCounter -= Time.deltaTime;
+        }
+        if(rangedAttackCounter > 0){
+            rangedAttackCounter -= Time.deltaTime;
+        }
         handleGravity();
         handleRotation();
         handleRoll();
@@ -284,11 +313,6 @@ public class Player : MonoBehaviour
             characterController.Move(currentRunMovement * Time.deltaTime);
         } else {
             characterController.Move(currentMovement * Time.deltaTime);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Space)){
-            GameObject clone;
-            clone = Instantiate(boomer, new Vector3(transform.position.x, transform.position.y+1,transform.position.z), transform.rotation) as GameObject;
         }
 
         if (isBuffed == true)
