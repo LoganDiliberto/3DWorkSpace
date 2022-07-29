@@ -7,7 +7,7 @@ public class Boomerang : MonoBehaviour {
     bool go;//Will Be Used To Change Direction Of Weapon
 
     GameObject player;//Reference To The Main Character
-    GameObject sword;//Reference To The Main Character's Weapon
+    GameObject hat;//Reference To The Main Character's Weapon
 
     Transform itemToRotate;//The Weapon That Is A Child Of The Empty Game Object
     
@@ -20,9 +20,9 @@ public class Boomerang : MonoBehaviour {
        go = false; //Set To Not Return Yet
 
        player = GameObject.Find("Player");// The GameObject To Return To
-       sword =  GameObject.Find("Sword");//The Weapon The Character Is Holding In The Scene
+       hat = GameObject.Find("otterHat");//The Weapon The Character Is Holding In The Scene
 
-       sword.GetComponent<MeshRenderer>().enabled = false; //Turn Off The Mesh Render To Make The Weapon Invisible
+       hat.GetComponent<MeshRenderer>().enabled = false; //Turn Off The Mesh Render To Make The Weapon Invisible
 
        itemToRotate = gameObject.transform.GetChild(0); //Find The Weapon That Is The Child Of The Empty Object       
        
@@ -58,7 +58,7 @@ public class Boomerang : MonoBehaviour {
         if(!go && Vector3.Distance(player.transform.position, transform.position) < 1.5 )
         {
             //Once It Is Close To The Player, Make The Player's Normal Weapon Visible, and Destroy The Clone
-            sword.GetComponent<MeshRenderer>().enabled = true;
+            hat.GetComponent<MeshRenderer>().enabled = true;
             Destroy(this.gameObject);
         }
     }
