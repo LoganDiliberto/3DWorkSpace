@@ -8,6 +8,7 @@ public class WinMenu : MonoBehaviour
 	public Transform buttonLocationM;
 	public Transform buttonLocationR;
 	public GameObject[] buffButtons;
+	public GameObject player;
 	
     // Start is called before the first frame update
     void Start()
@@ -16,6 +17,16 @@ public class WinMenu : MonoBehaviour
     }
 	
 	void Awake(){
+		selectRandomBuffOptions();
+	}
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+	
+	void selectRandomBuffOptions(){
 		GameObject buffButton1;
 		GameObject buffButton2;
 		GameObject buffButton3;
@@ -31,17 +42,14 @@ public class WinMenu : MonoBehaviour
 
 		buffButton1 = Instantiate<GameObject>(buffButtons[(int) selectedButtons[0]].gameObject, buttonLocationL);
 		buffButton1.transform.position = buttonLocationL.position;
+		buffButton1.GetComponent<BuffManager>().player = player;
 		
 		buffButton2 = Instantiate<GameObject>(buffButtons[(int) selectedButtons[1]].gameObject, buttonLocationM);
 		buffButton2.transform.position = buttonLocationM.position;
+		buffButton2.GetComponent<BuffManager>().player = player;
 		
 		buffButton3 = Instantiate<GameObject>(buffButtons[(int) selectedButtons[2]].gameObject, buttonLocationR);
 		buffButton3.transform.position = buttonLocationR.position;
+		buffButton3.GetComponent<BuffManager>().player = player;
 	}
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

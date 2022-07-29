@@ -9,7 +9,7 @@ public class Buttons : MonoBehaviour
 
     public void NextNight(){
         currentScene = SceneManager.GetActiveScene();
-	Time.timeScale = 1f;
-	SceneManager.LoadScene(currentScene.name, LoadSceneMode.Single);
+		Time.timeScale = 1f;
+		SceneManager.LoadScene(currentScene.name, LoadSceneMode.Single);
     }
 }
