@@ -55,8 +55,8 @@ public class Player : MonoBehaviour
     int zero = 0;
     float gravity = -9.8f;
     float groundedGravity = -.05f;
-    int meleeDamage = 10;
-    int rangedDamage = 15;
+    int meleeDamage = 100;
+    int rangedDamage = 100;
 
     //true constants (dont change with code - for resetting other variables to their original value)
     int maxHealthDONOTCHANGE = 5;
@@ -150,19 +150,19 @@ public class Player : MonoBehaviour
                 //Damage them / Print there names
                 foreach (Collider enemy in hitEnemies)
                 {
-                    // Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
+                    Debug.Log("We Hit " + enemy.name + " For " + meleeDamage + " Damage!");
                     enemy.GetComponent<Enemy>().TakeDamage(meleeDamage);
                 }
             }
         }
-        hat = GameObject.Find("Boomer");//The Weapon The Character Is Holding In The Scene
+        hat = GameObject.Find("Boomerang(Clone)");//The Weapon The Character Is Holding In The Scene
         if(hat != null){
             Collider [] hitEnemies = Physics.OverlapSphere(hat.transform.position, 3, enemyLayers);
-            Debug.Log("The hat is flying!");
+            // Debug.Log("The hat is flying!");
             //Damage them / Print there names
             foreach (Collider enemy in hitEnemies)
             {
-                Debug.Log("We Hit " + enemy.name + " For " + rangedDamage + " Damage!");
+                // Debug.Log("We Hit " + enemy.name + " For " + rangedDamage + " Damage!");
                 enemy.GetComponent<Enemy>().TakeDamage(rangedDamage);
             }
         }
